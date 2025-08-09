@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fastapiapp.fullname" . }}-movie
+  labels:
+    {{- include "fastapiapp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: movie
+      {{- include "fastapiapp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: movie
+        {{- include "fastapiapp.selectorLabels" . | nindent 8 }}
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: movie-service
+          image: "{{ .Values.movie_service.image.repository }}:{{ .Values.movie_service.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URI
+              value: "postgresql://movie_db_username:movie_db_password@movie-db-svc/movie_db_dev"
+            - name: CAST_SERVICE_HOST_URL
+              value: "http://cast-service:8000/api/v1/casts/"
