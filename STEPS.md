@@ -29,7 +29,7 @@ docker exec -u root jenkins /bin/bash -c "curl -LO https://dl.k8s.io/release/$(c
 docker exec -u root jenkins /bin/bash -c "curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
 ```
 
-## 6. Verify installations_
+## 6. Verify installations:
 ```bash
 docker exec jenkins kubectl version --client
 ```
