@@ -1,6 +1,28 @@
 pipeline {
     agent any
+    environment {
+        // These will be set in the stages using withCredentials
+        DOCKER_USER = ''
+        DOCKER_PASS = ''
+        GITHUB_USER = ''
+        GITHUB_TOKEN = ''
+    }
     stages {
+        stage('Setup Credentials') {
+            steps {
+                script {
+                    // Set credentials using withCredentials
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        env.DOCKER_USER = DOCKER_USER
+                        env.DOCKER_PASS = DOCKER_PASS
+                    }
+                    withCredentials([usernamePassword(credentialsId: 'github-creds', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_TOKEN')]) {
+                        env.GITHUB_USER = GITHUB_USER
+                        env.GITHUB_TOKEN = GITHUB_TOKEN
+                    }
+                }
+            }
+        }
         stage('Setup Kubernetes') {
             steps {
                 script {
