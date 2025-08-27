@@ -29,6 +29,14 @@ docker exec -u root jenkins /bin/bash -c "curl -LO https://dl.k8s.io/release/$(c
 docker exec -u root jenkins /bin/bash -c "curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
 ```
 
+## 6. Verify installations_
+```bash
+docker exec jenkins kubectl version --client
+```
+```bash
+docker exec jenkins helm version
+```
+
 ## 7. Get Jenkins admin password:
 ```bash
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
@@ -40,4 +48,12 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ## 9. Check logs:
 ```bash
 docker logs jenkins
+```
+
+## 10. Create the README.txt and dockerhub.txt files:
+```bash
+echo "GitHub Repository: https://github.com/SamiraJouini/jenkins_devops_exam" > README.txt
+```
+```bash
+echo "DockerHub: https://hub.docker.com/u/jouinis" > dockerhub.txt
 ```
