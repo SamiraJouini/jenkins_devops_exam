@@ -9,12 +9,10 @@ pipeline {
         stage('Prepare Kubeconfig') {
             steps {
                 script {
-                    // Decode base64 kubeconfig from credentials and save to file
-                    withCredentials([string(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG_BASE64')]) {
-                        sh """
-                            echo '${KUBECONFIG_BASE64}' | base64 -d > ${env.KUBECONFIG}
-                            chmod 600 ${env.KUBECONFIG}
-                        """
+                    // Write the kubeconfig content from secret text to a file
+                    withCredentials([string(credentialsId: 'kubeconfig-text', variable: 'KUBECONFIG_CONTENT')]) {
+                        writeFile file: "${env.KUBECONFIG}", text: "${KUBECONFIG_CONTENT}"
+                        sh "chmod 600 ${env.KUBECONFIG}"
                     }
                 }
             }
