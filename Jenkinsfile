@@ -9,10 +9,14 @@ pipeline {
         stage('Prepare Kubeconfig') {
             steps {
                 script {
-                    // Write the kubeconfig content from secret text to a file
-                    withCredentials([string(credentialsId: 'kubeconfig-text', variable: 'KUBECONFIG_CONTENT')]) {
-                        writeFile file: "${env.KUBECONFIG}", text: "${KUBECONFIG_CONTENT}"
-                        sh "chmod 600 ${env.KUBECONFIG}"
+                    // Copy the kubeconfig file from credentials
+                    withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG_FILE')]) {
+                        sh """
+                            cp '${KUBECONFIG_FILE}' '${env.KUBECONFIG}'
+                            chmod 600 '${env.KUBECONFIG}'
+                            # Test if the kubeconfig is valid
+                            kubectl cluster-info --request-timeout=5s
+                        """
                     }
                 }
             }
@@ -93,7 +97,7 @@ pipeline {
     }
     post {
         always {
-            sh 'kubectl get pods -n dev'
+            sh 'kubectl get pods -n dev || true'
             sh 'rm -f ${HOME}/.docker/config.json'
             sh 'rm -f ${KUBECONFIG}'
         }
