@@ -106,3 +106,10 @@ echo "GitHub Repository: https://github.com/SamiraJouini/jenkins_devops_exam" > 
 ```bash
 echo "DockerHub: https://hub.docker.com/u/jouinis" > dockerhub.txt
 ```
+
+## 18. Clean up all resources:
+```bash
+for namespace in dev qa prod staging; do
+  kubectl delete all --all -n $namespace
+done
+```
