@@ -39,22 +39,22 @@ pipeline {
                                 --docker-server=https://index.docker.io/v1/ \
                                 --docker-username=${DOCKER_USER} \
                                 --docker-password=${DOCKER_PASS} \
-                                --dry-run=client -o yaml | kubectl apply -n dev -f -
+                                --dry-run=client -o yaml | kubectl apply -n dev --validate=false -f -
                             kubectl create secret docker-registry regcred \
                                 --docker-server=https://index.docker.io/v1/ \
                                 --docker-username=${DOCKER_USER} \
                                 --docker-password=${DOCKER_PASS} \
-                                --dry-run=client -o yaml | kubectl apply -n qa -f -
+                                --dry-run=client -o yaml | kubectl apply -n qa --validate=false -f -
                             kubectl create secret docker-registry regcred \
                                 --docker-server=https://index.docker.io/v1/ \
                                 --docker-username=${DOCKER_USER} \
                                 --docker-password=${DOCKER_PASS} \
-                                --dry-run=client -o yaml | kubectl apply -n staging -f -
+                                --dry-run=client -o yaml | kubectl apply -n staging --validate=false -f -
                             kubectl create secret docker-registry regcred \
                                 --docker-server=https://index.docker.io/v1/ \
                                 --docker-username=${DOCKER_USER} \
                                 --docker-password=${DOCKER_PASS} \
-                                --dry-run=client -o yaml | kubectl apply -n prod -f -
+                                --dry-run=client -o yaml | kubectl apply -n prod --validate=false -f -
                         """
                     }
                 }
