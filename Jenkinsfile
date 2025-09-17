@@ -66,7 +66,14 @@ pipeline {
                     sh """
                         docker build -t ${DOCKER_USER}/cast-service:test ./cast-service
                         echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
-                        docker push ${DOCKER_USER}/cast-service:test
+                        
+                        # Check if image already exists in DockerHub before pushing
+                        if docker pull ${DOCKER_USER}/cast-service:test 2>/dev/null; then
+                            echo "Image ${DOCKER_USER}/cast-service:test already exists in DockerHub, skipping push"
+                        else
+                            echo "Pushing ${DOCKER_USER}/cast-service:test to DockerHub"
+                            docker push ${DOCKER_USER}/cast-service:test || echo "Push failed, but continuing pipeline"
+                        fi
                     """
                 }
             }
@@ -76,7 +83,14 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh """
                         docker build -t ${DOCKER_USER}/movie-service:test ./movie-service
-                        docker push ${DOCKER_USER}/movie-service:test
+                        
+                        # Check if image already exists in DockerHub before pushing
+                        if docker pull ${DOCKER_USER}/movie-service:test 2>/dev/null; then
+                            echo "Image ${DOCKER_USER}/movie-service:test already exists in DockerHub, skipping push"
+                        else
+                            echo "Pushing ${DOCKER_USER}/movie-service:test to DockerHub"
+                            docker push ${DOCKER_USER}/movie-service:test || echo "Push failed, but continuing pipeline"
+                        fi
                     """
                 }
             }
